@@ -4,7 +4,7 @@
 \alias{USPFunctional}
 \title{Independence test for functional data}
 \usage{
-USPFunctional(X, Y, Ntrunc, M, B)
+USPFunctional(X, Y, Ntrunc, M, B = 999, ties.method = "standard")
 }
 \arguments{
 \item{X}{A matrix of the discretised functional data from the first sample. There are \eqn{n} rows,
@@ -20,6 +20,10 @@ grid may be different to the grid used for \eqn{X}, if required.}
 coefficients.}
 
 \item{B}{The number of permutations used to calibrate the test.}
+
+\item{ties.method}{If "standard" then calculate the p-value as in (5) of \insertCite{BKS2020}{USP},
+which is slightly conservative. If "random" then break ties randomly. This preserves Type I error
+control.}
 }
 \value{
 A p-value for the test of the independence of \eqn{X} and \eqn{Y}.
@@ -41,7 +45,7 @@ for(i in 1:n){
  X[i,] <- cumsum(x*sqrt(t))
  Y[i,] <- cumsum(y*sqrt(t))
 }
-USPFunctional(X,Y,2,1,99)
+USPFunctional(X,Y,2,1,999)
 }
 \references{
 \insertRef{BKS2020}{USP}

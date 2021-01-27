@@ -12,6 +12,9 @@
 #' @param K \eqn{n \times n } kernel matrix corresponding to second sample.
 #' @param B The number of permutation used to calibrate the test.
 #' @param nullstats If TRUE, returns a vector of the null statistic values.
+#' @param ties.method If "standard" then calculate the p-value as in (5) of \insertCite{BKS2020}{USP},
+#' which is slightly conservative. If "random" then break ties randomly. This preserves Type I error
+#' control.
 #'
 #' @return Returns the p-value for this independence test and the value of the test statistic, \eqn{D_n},
 #' as defined in \insertCite{BKS2020}{USP}. If nullstats=TRUE is used, then the function also
@@ -23,7 +26,7 @@
 #' @examples
 #' x=runif(100); y=runif(100); M=3
 #' J=FourierKernel(x,M); K=FourierKernel(y,M)
-#' USP(J,K,99)
+#' USP(J,K,999)
 #'
 #' n=50; r=0.6; Ndisc=1000; t=1/Ndisc
 #' X=matrix(rep(0,Ndisc*n),nrow=n); Y=matrix(rep(0,Ndisc*n),nrow=n)
@@ -36,8 +39,8 @@
 #'  Y[i,] = cumsum(y*sqrt(t))
 #' }
 #' J=InfKern(X,2,1); K=InfKern(Y,2,1)
-#' USP(J,K,99)
-USP=function(J,K,B,nullstats=FALSE){
+#' USP(J,K,999)
+USP=function(J,K,B=999,ties.method="standard",nullstats=FALSE){
   n=nrow(J)
   TestStat=KernStat(J,K)
   NullStats=rep(0,B)
@@ -45,13 +48,18 @@ USP=function(J,K,B,nullstats=FALSE){
     perm=sample(n)
     NullStats[b]=KernStat(J,K[perm,perm])
   }
-  pval=(1+sum(TestStat<=NullStats))/(B+1)
+  if(ties.method=="random"){
+    pval=(B+2-rank(c(TestStat,NullStats),ties.method = "random")[1])/(B+1)
+  }else{
+    pval=(1+sum(TestStat<=NullStats))/(B+1)
+  }
+
   if(nullstats==FALSE){
     ans=list(pval,TestStat)
-    names(ans)=c("pvalue","TestStat")
+    names(ans)=c("p.value","TestStat")
   }else{
     ans=list(pval,TestStat,NullStats)
-    names(ans)=c("pvalue","TestStat","NullStats")
+    names(ans)=c("p.value","TestStat","NullStats")
   }
   return(ans)
 }

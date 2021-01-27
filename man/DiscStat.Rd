@@ -7,10 +7,11 @@
 DiscStat(freq)
 }
 \arguments{
-\item{freq}{A two-way contingency table whose strength of dependence is to be measured.}
+\item{freq}{Two-way contingency table whose strength of dependence is to be measured.}
 }
 \value{
-The value of the test statistic \eqn{T_n}.
+A list containing the value of the test statistic \eqn{T_n}, the table of expected
+null counts, and the table of contributions to \eqn{T_n}.
 }
 \description{
 This function computes the value of the test statistic \eqn{T_n} measuring the strength of

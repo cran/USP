@@ -4,7 +4,7 @@
 \alias{USP}
 \title{Permutation test of independence.}
 \usage{
-USP(J, K, B, nullstats = FALSE)
+USP(J, K, B = 999, ties.method = "standard", nullstats = FALSE)
 }
 \arguments{
 \item{J}{\eqn{n \times n } kernel matrix corresponding to first sample.}
@@ -12,6 +12,10 @@ USP(J, K, B, nullstats = FALSE)
 \item{K}{\eqn{n \times n } kernel matrix corresponding to second sample.}
 
 \item{B}{The number of permutation used to calibrate the test.}
+
+\item{ties.method}{If "standard" then calculate the p-value as in (5) of \insertCite{BKS2020}{USP},
+which is slightly conservative. If "random" then break ties randomly. This preserves Type I error
+control.}
 
 \item{nullstats}{If TRUE, returns a vector of the null statistic values.}
 }
@@ -32,7 +36,7 @@ can be entered separately.
 \examples{
 x=runif(100); y=runif(100); M=3
 J=FourierKernel(x,M); K=FourierKernel(y,M)
-USP(J,K,99)
+USP(J,K,999)
 
 n=50; r=0.6; Ndisc=1000; t=1/Ndisc
 X=matrix(rep(0,Ndisc*n),nrow=n); Y=matrix(rep(0,Ndisc*n),nrow=n)
@@ -45,7 +49,7 @@ for(i in 1:n){
  Y[i,] = cumsum(y*sqrt(t))
 }
 J=InfKern(X,2,1); K=InfKern(Y,2,1)
-USP(J,K,99)
+USP(J,K,999)
 }
 \references{
 \insertRef{BKS2020}{USP}

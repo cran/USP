@@ -14,6 +14,9 @@
 #' @param M The maximum frequency to use in the Fourier basis when testing the independence of the
 #' coefficients.
 #' @param B The number of permutations used to calibrate the test.
+#' @param ties.method If "standard" then calculate the p-value as in (5) of \insertCite{BKS2020}{USP},
+#' which is slightly conservative. If "random" then break ties randomly. This preserves Type I error
+#' control.
 #'
 #' @return A p-value for the test of the independence of \eqn{X} and \eqn{Y}.
 #' @export
@@ -31,8 +34,8 @@
 #'  X[i,] <- cumsum(x*sqrt(t))
 #'  Y[i,] <- cumsum(y*sqrt(t))
 #' }
-#' USPFunctional(X,Y,2,1,99)
-USPFunctional=function(X,Y,Ntrunc,M,B){
+#' USPFunctional(X,Y,2,1,999)
+USPFunctional=function(X,Y,Ntrunc,M,B=999,ties.method="standard"){
   J=InfKern(X,Ntrunc,M); K=InfKern(Y,Ntrunc,M)
-  return(USP(J,K,B))
+  return(USP(J,K,B,ties.method))
 }

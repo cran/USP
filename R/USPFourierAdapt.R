@@ -11,6 +11,9 @@
 #' @param B Controls the number of permutations to be used. With a sample size of \eqn{n}  each
 #' test uses \eqn{B \log_2 n} permutations. If \eqn{B+1 < 1/\alpha} then it is not possible to reject
 #' the null hypothesis.
+#' @param ties.method If "standard" then calculate the p-value as in (5) of \insertCite{BKS2020}{USP},
+#' which is slightly conservative. If "random" then break ties randomly. This preserves Type I error
+#' control.
 #'
 #' @return Returns an indicator with value 1 if the null hypothesis of independence is rejected and
 #'  0 otherwise. If the null hypothesis is rejected, the function also outputs the value of \eqn{M}
@@ -25,8 +28,8 @@
 #' unif=runif(m); prob=0.5*(1+sin(2*pi*w*x1)*sin(2*pi*w*y1)); accept=(unif<prob);
 #' Data1=unifdata[accept,]; x=Data1[1:n,1]; y=Data1[1:n,2]
 #' plot(x,y)
-#' USPFourierAdapt(x,y,0.05,99)
-USPFourierAdapt=function(x,y,alpha,B){
+#' USPFourierAdapt(x,y,0.05,999)
+USPFourierAdapt=function(x,y,alpha,B=999,ties.method="standard"){
   a=0
   if(B+1<1/alpha){
     print("B is too small to reject the null")
@@ -37,8 +40,8 @@ USPFourierAdapt=function(x,y,alpha,B){
   for(j in 1:Gam){
     rej=1
     M=2^(j-1)
-    test=USPFourier(x,y,M,Gam*B)
-    pval=test$pvalue
+    test=USPFourier(x,y,M,Gam*B,ties.method)
+    pval=test$p.value
     TestStat=test$TestStat
     if(pval<=alpha/Gam) break
     rej=0

@@ -4,7 +4,7 @@
 \alias{USPFourierAdapt}
 \title{Adaptive permutation test of independence for continuous data.}
 \usage{
-USPFourierAdapt(x, y, alpha, B)
+USPFourierAdapt(x, y, alpha, B = 999, ties.method = "standard")
 }
 \arguments{
 \item{x}{The vector of data points from the first sample, each entry belonging to \eqn{[0,1]}.}
@@ -16,6 +16,10 @@ USPFourierAdapt(x, y, alpha, B)
 \item{B}{Controls the number of permutations to be used. With a sample size of \eqn{n}  each
 test uses \eqn{B \log_2 n} permutations. If \eqn{B+1 < 1/\alpha} then it is not possible to reject
 the null hypothesis.}
+
+\item{ties.method}{If "standard" then calculate the p-value as in (5) of \insertCite{BKS2020}{USP},
+which is slightly conservative. If "random" then break ties randomly. This preserves Type I error
+control.}
 }
 \value{
 Returns an indicator with value 1 if the null hypothesis of independence is rejected and
@@ -34,7 +38,7 @@ unifdata=matrix(runif(2*m,min=0,max=1),ncol=2); x1=unifdata[,1]; y1=unifdata[,2]
 unif=runif(m); prob=0.5*(1+sin(2*pi*w*x1)*sin(2*pi*w*y1)); accept=(unif<prob);
 Data1=unifdata[accept,]; x=Data1[1:n,1]; y=Data1[1:n,2]
 plot(x,y)
-USPFourierAdapt(x,y,0.05,99)
+USPFourierAdapt(x,y,0.05,999)
 }
 \references{
 \insertRef{BKS2020}{USP}
